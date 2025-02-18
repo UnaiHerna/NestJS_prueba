@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 export interface User {
 	name: string;
@@ -6,15 +6,28 @@ export interface User {
 }
 @Injectable()
 export class TasksService {
-	getTasks(): User {
-		return {
-			name: "Juan",
-			age: 23
-		}
+	
+	private tasks: any[] = [];
+
+	getTasks() {
+		return this.tasks;
 	}
 
-	createTask() {
-		return "Hola";
+	getTask(id: number) {
+		const result = this.tasks.find(task => task.id === id);
+		if (!result) {
+			return new NotFoundException("Task not found");
+		}
+		return result;
+	}
+
+	createTask(task: any) {
+		console.log(task);
+		this.tasks.push({
+			...task,
+			id: this.tasks.length + 1,
+		});
+		return task;
 	}
 
 	updateTask() {
